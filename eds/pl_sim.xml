@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2022 bitValence, Inc.
+    All Rights Reserved.
+
+    This program is free software; you can modify and/or redistribute it
+    under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; version 3 with
+    attribution addendums as found in the LICENSE.txt.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+      
+    Purpose: 
+      This describes all interface objects for the OpenSatKit(OSK) Payload
+      Simulator (PL_SIM) application 
+
+    Notes:
+      1. This document adheres to the Electronic Data Sheet (EDS) XML schema 
+         as prescribed in CCSDS book 876.0. 
+      
+-->
+<PackageFile xmlns="http://www.ccsds.org/schema/sois/seds">
+  <Package name="PL_SIM" shortDescription="Payload simulator app">
+    <DataTypeSet>
+
+      <!--***********************************-->
+      <!--**** DataTypeSet:  Entry Types ****-->
+      <!--***********************************-->
+
+
+      <!--***************************************-->
+      <!--**** DataTypeSet: Command Payloads ****-->
+      <!--***************************************-->
+
+
+      <!--*****************************************-->
+      <!--**** DataTypeSet: Telemetry Payloads ****-->
+      <!--*****************************************-->
+    
+      <ContainerDataType name="StatusTlm_Payload" shortDescription="App's state and status summary">
+        <EntryList>
+          <Entry name="ValidCmdCnt"        type="BASE_TYPES/uint16"  shortDescription="" />
+          <Entry name="InvalidCmdCnt"      type="BASE_TYPES/uint16"  shortDescription="" />
+          <Entry name="PayloadPower"       type="BASE_TYPES/uint8"   shortDescription="" />
+          <Entry name="PowerInitCycleCnt"  type="BASE_TYPES/uint8"   shortDescription="" />
+          <Entry name="PowerResetCycleCnt" type="BASE_TYPES/uint8"   shortDescription="" />
+          <Entry name="DetectorFault"      type="BASE_TYPES/uint8"   shortDescription="" />
+          <Entry name="DetectorReadoutRow" type="BASE_TYPES/uint16"  shortDescription="" />
+          <Entry name="DetectorImageCnt"   type="BASE_TYPES/uint16"  shortDescription="" />
+        </EntryList>
+      </ContainerDataType>
+      
+
+      <!--**************************************-->
+      <!--**** DataTypeSet: Command Packets ****-->
+      <!--**************************************-->
+
+      <ContainerDataType name="CommandBase" baseType="CFE_HDR/CommandHeader">
+      </ContainerDataType>
+
+      <ContainerDataType name="Noop" baseType="CommandBase" shortDescription="Generate an info event message with app version">
+        <ConstraintSet>
+          <ValueConstraint entry="Sec.FunctionCode" value="${OSK_C_FW/NOOP_CC}" />
+        </ConstraintSet>
+      </ContainerDataType>
+
+      <ContainerDataType name="Reset" baseType="CommandBase" shortDescription="Reset app to a known state">
+        <ConstraintSet>
+          <ValueConstraint entry="Sec.FunctionCode" value="${OSK_C_FW/RESET_CC}" />
+        </ConstraintSet>
+      </ContainerDataType>
+
+      <ContainerDataType name="PowerOn" baseType="CommandBase" shortDescription="Turn power on,initiates power init cycle counter">
+        <ConstraintSet>
+          <ValueConstraint entry="Sec.FunctionCode" value="${OSK_C_FW/APP_BASE_CC} + 0" />
+        </ConstraintSet>
+      </ContainerDataType>
+
+      <ContainerDataType name="PowerOff" baseType="CommandBase" shortDescription="Turn power off">
+        <ConstraintSet>
+          <ValueConstraint entry="Sec.FunctionCode" value="${OSK_C_FW/APP_BASE_CC} + 1" />
+        </ConstraintSet>
+      </ContainerDataType>
+
+      <ContainerDataType name="PowerReset" baseType="CommandBase" shortDescription="Reset power, initiates power reset cycle counter">
+        <ConstraintSet>
+          <ValueConstraint entry="Sec.FunctionCode" value="${OSK_C_FW/APP_BASE_CC} + 2" />
+        </ConstraintSet>
+      </ContainerDataType>
+
+      <ContainerDataType name="SetFault" baseType="CommandBase" shortDescription="Set detector fault to true">
+        <ConstraintSet>
+          <ValueConstraint entry="Sec.FunctionCode" value="${OSK_C_FW/APP_BASE_CC} + 3" />
+        </ConstraintSet>
+      </ContainerDataType>
+
+      <ContainerDataType name="ClearFault" baseType="CommandBase" shortDescription="Set detector fault to false">
+        <ConstraintSet>
+          <ValueConstraint entry="Sec.FunctionCode" value="${OSK_C_FW/APP_BASE_CC} + 4" />
+        </ConstraintSet>
+      </ContainerDataType>
+
+
+      <!--****************************************-->
+      <!--**** DataTypeSet: Telemetry Packets ****-->
+      <!--****************************************-->
+
+      <ContainerDataType name="StatusTlm" baseType="CFE_HDR/TelemetryHeader">
+        <EntryList>
+          <Entry type="StatusTlm_Payload" name="Payload" />
+        </EntryList>
+      </ContainerDataType>
+     
+    </DataTypeSet>
+    
+    <ComponentSet>
+      <Component name="Application">
+
+        <!--***********************************-->
+        <!--**** Component Set: Interfaces ****-->
+        <!--***********************************-->
+      
+        <RequiredInterfaceSet>
+        
+          <Interface name="CMD" shortDescription="Software bus telecommand interface" type="CFE_SB/Telecommand">
+            <GenericTypeMapSet>
+              <GenericTypeMap name="TelecommandDataType" type="CommandBase" />
+            </GenericTypeMapSet>
+          </Interface>
+
+          <Interface name="EXE_APP" shortDescription="Signal app to execute command interface" type="CFE_SB/Telecommand">
+             <!-- This uses a bare spacepacket with no payload -->
+             <GenericTypeMapSet>
+                <GenericTypeMap name="TelecommandDataType" type="CFE_HDR/CommandHeader" />
+             </GenericTypeMapSet>
+          </Interface>
+          
+          <Interface name="STATUS_TLM" shortDescription="Software bus status telemetry interface" type="CFE_SB/Telemetry">
+            <GenericTypeMapSet>
+              <GenericTypeMap name="TelemetryDataType" type="StatusTlm" />
+            </GenericTypeMapSet>
+          </Interface>
+        </RequiredInterfaceSet>
+
+        <!--***************************************-->
+        <!--**** Component Set: Implementation ****-->
+        <!--***************************************-->
+
+        <Implementation>
+          <VariableSet>
+            <Variable type="BASE_TYPES/uint16" readOnly="true" name="CmdTopicId"       initialValue="${CFE_MISSION/PL_SIM_CMD_TOPICID}" />
+            <Variable type="BASE_TYPES/uint16" readOnly="true" name="ExeAppTopicId"    initialValue="${CFE_MISSION/PL_SIM_EXE_TOPICID}" />
+            <Variable type="BASE_TYPES/uint16" readOnly="true" name="StatusTlmTopicId" initialValue="${CFE_MISSION/PL_SIM_STATUS_TLM_TOPICID}" />
+          </VariableSet>
+          <!-- Assign fixed numbers to the "TopicId" parameter of each interface -->
+          <ParameterMapSet>          
+            <ParameterMap interface="CMD"        parameter="TopicId" variableRef="CmdTopicId" />
+            <ParameterMap interface="EXE_APP"    parameter="TopicId" variableRef="ExeAppTopicId" />
+            <ParameterMap interface="STATUS_TLM" parameter="TopicId" variableRef="StatusTlmTopicId" />
+          </ParameterMapSet>
+        </Implementation>
+      </Component>
+    </ComponentSet>
+    
+  </Package>
+</PackageFile>

@@ -1,0 +1,18 @@
+{
+   "title": "Payload Simulator App (PL_SIM_APP) initialization file",
+   "description": [ "Define runtime configurations"],
+
+   "config": {
+      
+      "APP_CFE_NAME": "PL_SIM_APP",
+      
+      "PL_SIM_CMD_TOPICID":        6244,
+      "PL_SIM_EXE_TOPICID":        6245,
+      "PL_SIM_STATUS_TLM_TOPICID": 2145,
+      "TLM_SLOW_RATE":             4,
+      
+      "CMD_PIPE_DEPTH": 5,
+      "CMD_PIPE_NAME" : "PL_SIM_APP_CMD_PIPE"
+
+   }
+}
