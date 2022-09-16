@@ -43,14 +43,14 @@
     
       <ContainerDataType name="StatusTlm_Payload" shortDescription="App's state and status summary">
         <EntryList>
-          <Entry name="ValidCmdCnt"        type="BASE_TYPES/uint16"  shortDescription="" />
-          <Entry name="InvalidCmdCnt"      type="BASE_TYPES/uint16"  shortDescription="" />
-          <Entry name="PayloadPower"       type="BASE_TYPES/uint8"   shortDescription="" />
-          <Entry name="PowerInitCycleCnt"  type="BASE_TYPES/uint8"   shortDescription="" />
-          <Entry name="PowerResetCycleCnt" type="BASE_TYPES/uint8"   shortDescription="" />
-          <Entry name="DetectorFault"      type="BASE_TYPES/uint8"   shortDescription="" />
-          <Entry name="DetectorReadoutRow" type="BASE_TYPES/uint16"  shortDescription="" />
-          <Entry name="DetectorImageCnt"   type="BASE_TYPES/uint16"  shortDescription="" />
+          <Entry name="ValidCmdCnt"           type="BASE_TYPES/uint16"     shortDescription="" />
+          <Entry name="InvalidCmdCnt"         type="BASE_TYPES/uint16"     shortDescription="" />
+          <Entry name="LibPwrState"           type="PL_SIM_LIB/Power"      shortDescription="" />
+          <Entry name="LibPwrInitCycleCnt"    type="BASE_TYPES/uint8"      shortDescription="" />
+          <Entry name="LibPwrResetCycleCnt"   type="BASE_TYPES/uint8"      shortDescription="" />
+          <Entry name="LibDetectorFault"      type="OSK_C_FW/BooleanUint8" shortDescription="" />
+          <Entry name="LibDetectorReadoutRow" type="BASE_TYPES/uint16"     shortDescription="" />
+          <Entry name="LibDetectorImageCnt"   type="BASE_TYPES/uint16"     shortDescription="" />
         </EntryList>
       </ContainerDataType>
       
@@ -73,6 +73,9 @@
           <ValueConstraint entry="Sec.FunctionCode" value="${OSK_C_FW/RESET_CC}" />
         </ConstraintSet>
       </ContainerDataType>
+
+      <!-- For each command that is a binary switch use separate function -->  
+      <!-- codes so they all have command length with no parameters. -->
 
       <ContainerDataType name="PowerOn" baseType="CommandBase" shortDescription="Turn power on,initiates power init cycle counter">
         <ConstraintSet>
@@ -132,13 +135,6 @@
             </GenericTypeMapSet>
           </Interface>
 
-          <Interface name="EXE_APP" shortDescription="Signal app to execute command interface" type="CFE_SB/Telecommand">
-             <!-- This uses a bare spacepacket with no payload -->
-             <GenericTypeMapSet>
-                <GenericTypeMap name="TelecommandDataType" type="CFE_HDR/CommandHeader" />
-             </GenericTypeMapSet>
-          </Interface>
-          
           <Interface name="STATUS_TLM" shortDescription="Software bus status telemetry interface" type="CFE_SB/Telemetry">
             <GenericTypeMapSet>
               <GenericTypeMap name="TelemetryDataType" type="StatusTlm" />
@@ -153,13 +149,11 @@
         <Implementation>
           <VariableSet>
             <Variable type="BASE_TYPES/uint16" readOnly="true" name="CmdTopicId"       initialValue="${CFE_MISSION/PL_SIM_CMD_TOPICID}" />
-            <Variable type="BASE_TYPES/uint16" readOnly="true" name="ExeAppTopicId"    initialValue="${CFE_MISSION/PL_SIM_EXE_TOPICID}" />
             <Variable type="BASE_TYPES/uint16" readOnly="true" name="StatusTlmTopicId" initialValue="${CFE_MISSION/PL_SIM_STATUS_TLM_TOPICID}" />
           </VariableSet>
           <!-- Assign fixed numbers to the "TopicId" parameter of each interface -->
           <ParameterMapSet>          
             <ParameterMap interface="CMD"        parameter="TopicId" variableRef="CmdTopicId" />
-            <ParameterMap interface="EXE_APP"    parameter="TopicId" variableRef="ExeAppTopicId" />
             <ParameterMap interface="STATUS_TLM" parameter="TopicId" variableRef="StatusTlmTopicId" />
           </ParameterMapSet>
         </Implementation>

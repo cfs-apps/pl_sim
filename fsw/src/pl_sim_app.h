@@ -63,47 +63,14 @@
 
 /******************************************************************************
 ** Command Packets
-**
-** For each command that is a binary switch use separate function codes 
-** so they all have command length with no parameters.
-**
+** - See EDS command definitions in pl_sim.xml
 */
-
-#define PL_SIM_POWER_ON_CMD_DATA_LEN     CMDMGR_NO_PARAM_CMD_DATA_LEN
-#define PL_SIM_POWER_OFF_CMD_DATA_LEN    CMDMGR_NO_PARAM_CMD_DATA_LEN
-#define PL_SIM_POWER_RESET_CMD_DATA_LEN  CMDMGR_NO_PARAM_CMD_DATA_LEN
-#define PL_SIM_SET_FAULT_CMD_DATA_LEN    CMDMGR_NO_PARAM_CMD_DATA_LEN
-#define PL_SIM_CLEAR_FAULT_CMD_DATA_LEN  CMDMGR_NO_PARAM_CMD_DATA_LEN
 
 
 /******************************************************************************
 ** Telemetry Packets
+** - See EDS command definitions in pl_sim.xml
 */
-
-typedef struct
-{
-
-   CFE_MSG_TelemetryHeader_t TelemetryHeader;
-
-   /*
-   ** CMDMGR Data
-   */
-   
-   uint16  ValidCmdCnt;
-   uint16  InvalidCmdCnt;
-   
-   /*
-   ** PL_SIM Library Data
-   */
-
-   uint8   LibPwrState;
-   uint8   LibPwrInitCycleCnt;
-   uint8   LibPwrResetCycleCnt;
-   bool    LibDetectorFault;
-   uint16  LibDetectorReadoutRow;
-   uint16  LibDetectorImageCnt;
-   
-} PL_SIM_StatusTlm_t;
 
 
 /******************************************************************************

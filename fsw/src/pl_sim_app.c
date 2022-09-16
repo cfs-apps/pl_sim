@@ -30,7 +30,7 @@
 
 #include <string.h>
 #include "pl_sim_app.h"
-
+#include "pl_sim_eds_cc.h"
 
 /***********************/
 /** Macro Definitions **/
@@ -182,7 +182,7 @@ bool PL_SIM_PowerOnCmd(void* DataObjPtr, const CFE_MSG_Message_t *MsgPtrr)
 
    bool RetStatus = false;
 
-   if (PlSim.Lib.State.Power == PL_SIM_LIB_POWER_OFF)
+   if (PlSim.Lib.State.Power == PL_SIM_LIB_Power_OFF)
    {
       PL_SIM_LIB_PowerOn();      
       RetStatus = true;
@@ -215,7 +215,7 @@ bool PL_SIM_PowerResetCmd (void* DataObjPtr, const CFE_MSG_Message_t *MsgPtr)
 
    bool RetStatus = false;
 
-   if (PlSim.Lib.State.Power == PL_SIM_LIB_POWER_READY)
+   if (PlSim.Lib.State.Power == PL_SIM_LIB_Power_READY)
    {
       PL_SIM_LIB_PowerReset();
       RetStatus = true;
@@ -291,7 +291,7 @@ static int32 InitApp(void)
    {
    
       PlSim.CmdMid      = CFE_SB_ValueToMsgId(INITBL_GetIntConfig(INITBL_OBJ, CFG_PL_SIM_CMD_TOPICID));
-      PlSim.ExecuteMid  = CFE_SB_ValueToMsgId(INITBL_GetIntConfig(INITBL_OBJ, CFG_PL_SIM_EXE_TOPICID));
+      PlSim.ExecuteMid  = CFE_SB_ValueToMsgId(INITBL_GetIntConfig(INITBL_OBJ, CFG_BC_SCH_1_HZ_TOPICID));
       PlSim.TlmSlowRate = INITBL_GetIntConfig(INITBL_OBJ, CFG_TLM_SLOW_RATE);
 
       Status = CFE_SUCCESS; 
@@ -315,14 +315,14 @@ static int32 InitApp(void)
       CFE_SB_Subscribe(PlSim.ExecuteMid, PlSim.CmdPipe);
 
       CMDMGR_Constructor(CMDMGR_OBJ);
-      CMDMGR_RegisterFunc(CMDMGR_OBJ, CMDMGR_NOOP_CMD_FC,  NULL, PL_SIM_NoOpCmd,     0);
-      CMDMGR_RegisterFunc(CMDMGR_OBJ, CMDMGR_RESET_CMD_FC, NULL, PL_SIM_ResetAppCmd, 0);
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_NOOP_CC,  NULL, PL_SIM_NoOpCmd,     0);
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_RESET_CC, NULL, PL_SIM_ResetAppCmd, 0);
 
-      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_POWER_ON_CMD_FC,    &PlSim,  PL_SIM_PowerOnCmd,    PL_SIM_POWER_ON_CMD_DATA_LEN);
-      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_POWER_OFF_CMD_FC,   &PlSim,  PL_SIM_PowerOffCmd,   PL_SIM_POWER_OFF_CMD_DATA_LEN);
-      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_POWER_RESET_CMD_FC, &PlSim,  PL_SIM_PowerResetCmd, PL_SIM_POWER_RESET_CMD_DATA_LEN);
-      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_SET_FAULT_CMD_FC,   &PlSim,  PL_SIM_SetFaultCmd,   PL_SIM_SET_FAULT_CMD_DATA_LEN);
-      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_CLEAR_FAULT_CMD_FC, &PlSim,  PL_SIM_ClearFaultCmd, PL_SIM_CLEAR_FAULT_CMD_DATA_LEN);
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_POWER_ON_CC,    &PlSim,  PL_SIM_PowerOnCmd,    0);
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_POWER_OFF_CC,   &PlSim,  PL_SIM_PowerOffCmd,   0);
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_POWER_RESET_CC, &PlSim,  PL_SIM_PowerResetCmd, 0);
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_SET_FAULT_CC,   &PlSim,  PL_SIM_SetFaultCmd,   0);
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_CLEAR_FAULT_CC, &PlSim,  PL_SIM_ClearFaultCmd, 0);
 
       /*
       ** Initialize app messages 
@@ -382,7 +382,7 @@ static int32 ProcessCommands(void)
 
             PL_SIM_LIB_ExecuteStep();
             PL_SIM_LIB_ReadState(&PlSim.Lib);
-            if (PlSim.Lib.State.Power != PL_SIM_LIB_POWER_OFF)
+            if (PlSim.Lib.State.Power != PL_SIM_LIB_Power_OFF)
             {
                SendStatusTlm();
             }
@@ -435,24 +435,26 @@ static int32 ProcessCommands(void)
 static void SendStatusTlm(void)
 {
 
+   PL_SIM_StatusTlm_Payload_t *Payload = &PlSim.StatusTlm.Payload;
+   
    /*
    ** Framework Data
    */
    
-   PlSim.StatusTlm.ValidCmdCnt   = PlSim.CmdMgr.ValidCmdCnt;
-   PlSim.StatusTlm.InvalidCmdCnt = PlSim.CmdMgr.InvalidCmdCnt;
+   Payload->ValidCmdCnt   = PlSim.CmdMgr.ValidCmdCnt;
+   Payload->InvalidCmdCnt = PlSim.CmdMgr.InvalidCmdCnt;
    
    
    /*
    ** PL_SIM Library Data
    */
 
-   PlSim.StatusTlm.LibPwrState           = PlSim.Lib.State.Power;
-   PlSim.StatusTlm.LibPwrInitCycleCnt    = PlSim.Lib.State.PowerInitCycleCnt;
-   PlSim.StatusTlm.LibPwrResetCycleCnt   = PlSim.Lib.State.PowerResetCycleCnt;
-   PlSim.StatusTlm.LibDetectorFault      = PlSim.Lib.State.DetectorFaultPresent;
-   PlSim.StatusTlm.LibDetectorReadoutRow = PlSim.Lib.Detector.ReadoutRow;
-   PlSim.StatusTlm.LibDetectorImageCnt   = PlSim.Lib.Detector.ImageCnt;
+   Payload->LibPwrState           = PlSim.Lib.State.Power;
+   Payload->LibPwrInitCycleCnt    = PlSim.Lib.State.PowerInitCycleCnt;
+   Payload->LibPwrResetCycleCnt   = PlSim.Lib.State.PowerResetCycleCnt;
+   Payload->LibDetectorFault      = PlSim.Lib.State.DetectorFaultPresent;
+   Payload->LibDetectorReadoutRow = PlSim.Lib.Detector.ReadoutRow;
+   Payload->LibDetectorImageCnt   = PlSim.Lib.Detector.ImageCnt;
 
 
    CFE_SB_TimeStampMsg(CFE_MSG_PTR(PlSim.StatusTlm.TelemetryHeader));
