@@ -2,12 +2,13 @@
    
    "title": "Payload Simulator",
    "version": "0.9.0",
-   "owner": "OpenSatkit",
-   "url": "https://github.com/OpenSatKit-Apps/pl_sim",
+   "supplier": "Open STEMware",
+   "copyright": "bitValence",
+   "url": "https://github.com/cfs-apps/pl_sim",
 
    "description": [
       "Simulate the payload managed by the example payload manager",
-      "app pl_mgr."
+      "app PL_MGR."
    ],
 
    "cfs": {
@@ -20,9 +21,10 @@
       "load_addr": 0,
       "exception-action": 0,
       "app-framework": "osk",
-      "tables": ["pl_sim_ini.json"],
-      "cmd-mid": "PL_SIM_CMD_MID"
-   }
-   
+      "tables": ["pl_sim_ini.json"]
+   },
+
+   "requires": ["osk_c_fw", "pl_sim_lib"]
+
 }}
 
