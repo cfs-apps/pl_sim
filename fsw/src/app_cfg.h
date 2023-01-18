@@ -19,8 +19,8 @@
 **    1. These configurations should have an application scope and define
 **       parameters that shouldn't need to change across deployments. If
 **       a change is made to this file or any other app source file during
-**       a deployment then the definition of the OSK_C_DEMO_PLATFORM_REV
-**       macro in osk_c_demo_platform_cfg.h should be updated.
+**       a deployment then the definition of the PL_SIM_PLATFORM_REV
+**       macro in pl_sim_platform_cfg.h should be updated.
 **
 **  References:
 **    1. OpenSatKit Object-based Application Developer's Guide.
@@ -35,7 +35,7 @@
 */
 
 #include "pl_sim_eds_typedefs.h"
-#include "osk_c_fw.h"
+#include "app_c_fw.h"
 #include "pl_sim_platform_cfg.h"
 
 
@@ -100,7 +100,7 @@ DECLARE_ENUM(Config,APP_CONFIG)
 ** exceeded so it is the developer's responsibility to verify the ranges. 
 */
 
-#define PL_SIM_BASE_EID  (OSK_C_FW_APP_BASE_EID + 0)
+#define PL_SIM_BASE_EID  (APP_C_FW_APP_BASE_EID + 0)
 
 
 /*

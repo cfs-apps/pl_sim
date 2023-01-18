@@ -15,8 +15,7 @@
     GNU Affero General Public License for more details.
       
     Purpose: 
-      This describes all interface objects for the OpenSatKit(OSK) Payload
-      Simulator (PL_SIM) application 
+      Define the interface the Payload Simulator (PL_SIM) application 
 
     Notes:
       1. This document adheres to the Electronic Data Sheet (EDS) XML schema 
@@ -48,7 +47,7 @@
           <Entry name="LibPwrState"           type="PL_SIM_LIB/Power"      shortDescription="" />
           <Entry name="LibPwrInitCycleCnt"    type="BASE_TYPES/uint8"      shortDescription="" />
           <Entry name="LibPwrResetCycleCnt"   type="BASE_TYPES/uint8"      shortDescription="" />
-          <Entry name="LibDetectorFault"      type="OSK_C_FW/BooleanUint8" shortDescription="" />
+          <Entry name="LibDetectorFault"      type="APP_C_FW/BooleanUint8" shortDescription="" />
           <Entry name="LibDetectorReadoutRow" type="BASE_TYPES/uint16"     shortDescription="" />
           <Entry name="LibDetectorImageCnt"   type="BASE_TYPES/uint16"     shortDescription="" />
         </EntryList>
@@ -64,13 +63,13 @@
 
       <ContainerDataType name="Noop" baseType="CommandBase" shortDescription="Generate an info event message with app version">
         <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${OSK_C_FW/NOOP_CC}" />
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/NOOP_CC}" />
         </ConstraintSet>
       </ContainerDataType>
 
       <ContainerDataType name="Reset" baseType="CommandBase" shortDescription="Reset app to a known state">
         <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${OSK_C_FW/RESET_CC}" />
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/RESET_CC}" />
         </ConstraintSet>
       </ContainerDataType>
 
@@ -79,31 +78,31 @@
 
       <ContainerDataType name="PowerOn" baseType="CommandBase" shortDescription="Turn power on,initiates power init cycle counter">
         <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${OSK_C_FW/APP_BASE_CC} + 0" />
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 0" />
         </ConstraintSet>
       </ContainerDataType>
 
       <ContainerDataType name="PowerOff" baseType="CommandBase" shortDescription="Turn power off">
         <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${OSK_C_FW/APP_BASE_CC} + 1" />
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 1" />
         </ConstraintSet>
       </ContainerDataType>
 
       <ContainerDataType name="PowerReset" baseType="CommandBase" shortDescription="Reset power, initiates power reset cycle counter">
         <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${OSK_C_FW/APP_BASE_CC} + 2" />
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 2" />
         </ConstraintSet>
       </ContainerDataType>
 
       <ContainerDataType name="SetFault" baseType="CommandBase" shortDescription="Set detector fault to true">
         <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${OSK_C_FW/APP_BASE_CC} + 3" />
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 3" />
         </ConstraintSet>
       </ContainerDataType>
 
       <ContainerDataType name="ClearFault" baseType="CommandBase" shortDescription="Set detector fault to false">
         <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${OSK_C_FW/APP_BASE_CC} + 4" />
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 4" />
         </ConstraintSet>
       </ContainerDataType>
 

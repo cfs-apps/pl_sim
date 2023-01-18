@@ -281,7 +281,7 @@ bool PL_SIM_SetFaultCmd (void* DataObjPtr, const CFE_MSG_Message_t *MsgPtr)
 static int32 InitApp(void)
 {
 
-   int32 Status = OSK_C_FW_CFS_ERROR;
+   int32 Status = APP_C_FW_CFS_ERROR;
    
    /*
    ** Initialize objects 
@@ -403,7 +403,7 @@ static int32 ProcessCommands(void)
          {
             
             CFE_EVS_SendEvent(PL_SIM_INVALID_CMD_EID, CFE_EVS_EventType_ERROR,
-                              "Received invalid command packet, MID = 0x%08X",
+                              "Received invalid command packet, MID = 0x%04X",
                               CFE_SB_MsgIdToValue(MsgId));
          } 
 

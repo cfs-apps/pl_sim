@@ -24,7 +24,7 @@
       "tables": ["pl_sim_ini.json"]
    },
 
-   "requires": ["osk_c_fw", "pl_sim_lib"]
+   "requires": ["app_c_fw", "pl_sim_lib"]
 
 }}
 
