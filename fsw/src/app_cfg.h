@@ -49,8 +49,8 @@
 ** 1.0 - Initial version
 */
 
-#define  PL_SIM_MAJOR_VER   0
-#define  PL_SIM_MINOR_VER   9
+#define  PL_SIM_MAJOR_VER   1
+#define  PL_SIM_MINOR_VER   0
 
 
 /******************************************************************************

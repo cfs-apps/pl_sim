@@ -42,14 +42,15 @@
     
       <ContainerDataType name="StatusTlm_Payload" shortDescription="App's state and status summary">
         <EntryList>
-          <Entry name="ValidCmdCnt"           type="BASE_TYPES/uint16"     shortDescription="" />
-          <Entry name="InvalidCmdCnt"         type="BASE_TYPES/uint16"     shortDescription="" />
-          <Entry name="LibPwrState"           type="PL_SIM_LIB/Power"      shortDescription="" />
-          <Entry name="LibPwrInitCycleCnt"    type="BASE_TYPES/uint8"      shortDescription="" />
-          <Entry name="LibPwrResetCycleCnt"   type="BASE_TYPES/uint8"      shortDescription="" />
-          <Entry name="LibDetectorFault"      type="APP_C_FW/BooleanUint8" shortDescription="" />
-          <Entry name="LibDetectorReadoutRow" type="BASE_TYPES/uint16"     shortDescription="" />
-          <Entry name="LibDetectorImageCnt"   type="BASE_TYPES/uint16"     shortDescription="" />
+          <Entry name="ValidCmdCnt"              type="BASE_TYPES/uint16"     shortDescription="" />
+          <Entry name="InvalidCmdCnt"            type="BASE_TYPES/uint16"     shortDescription="" />
+          <Entry name="LibPowerState"            type="PL_SIM_LIB/Power"      shortDescription="" />
+          <Entry name="LibPowerInitCycleCnt"     type="BASE_TYPES/uint8"      shortDescription="" />
+          <Entry name="LibDetectorResetCycleCnt" type="BASE_TYPES/uint8"      shortDescription="" />
+          <Entry name="LibDetectorState"         type="PL_SIM_LIB/Detector"   shortDescription="" />
+          <Entry name="LibDetectorFault"         type="APP_C_FW/BooleanUint8" shortDescription="" />
+          <Entry name="LibDetectorReadoutRow"    type="BASE_TYPES/uint16"     shortDescription="" />
+          <Entry name="LibDetectorImageCnt"      type="BASE_TYPES/uint16"     shortDescription="" />
         </EntryList>
       </ContainerDataType>
       
@@ -73,8 +74,8 @@
         </ConstraintSet>
       </ContainerDataType>
 
-      <!-- For each command that is a binary switch use separate function -->  
-      <!-- codes so they all have command length with no parameters. -->
+      <!-- Use separate function codes for each command that is a binary  -->  
+      <!-- switch so they all have command length with no parameters.     -->
 
       <ContainerDataType name="PowerOn" baseType="CommandBase" shortDescription="Turn power on,initiates power init cycle counter">
         <ConstraintSet>
@@ -88,21 +89,15 @@
         </ConstraintSet>
       </ContainerDataType>
 
-      <ContainerDataType name="PowerReset" baseType="CommandBase" shortDescription="Reset power, initiates power reset cycle counter">
+      <ContainerDataType name="SetFault" baseType="CommandBase" shortDescription="Set detector fault to true">
         <ConstraintSet>
           <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 2" />
         </ConstraintSet>
       </ContainerDataType>
 
-      <ContainerDataType name="SetFault" baseType="CommandBase" shortDescription="Set detector fault to true">
-        <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 3" />
-        </ConstraintSet>
-      </ContainerDataType>
-
       <ContainerDataType name="ClearFault" baseType="CommandBase" shortDescription="Set detector fault to false">
         <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 4" />
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 3" />
         </ConstraintSet>
       </ContainerDataType>
 

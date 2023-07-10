@@ -201,39 +201,6 @@ bool PL_SIM_PowerOnCmd(void* DataObjPtr, const CFE_MSG_Message_t *MsgPtrr)
 
 
 /******************************************************************************
-** Functions: PL_SIM_PowerResetCmd
-**
-** Initiate a power reset. The PL_SIM_ExecuteStep() method defines how the
-** simple responds to a reset.
-**
-** Note:
-**  1. This function must comply with the CMDMGR_CmdFuncPtr definition
-**  2. The PL_SIM library outputs an event message power state transitions
-*/
-bool PL_SIM_PowerResetCmd (void* DataObjPtr, const CFE_MSG_Message_t *MsgPtr)
-{
-
-   bool RetStatus = false;
-
-   if (PlSim.Lib.State.Power == PL_SIM_LIB_Power_READY)
-   {
-      PL_SIM_LIB_PowerReset();
-      RetStatus = true;
-   
-   }  
-   else
-   { 
-      CFE_EVS_SendEvent (PL_SIM_PWR_RESET_CMD_ERR_EID, CFE_EVS_EventType_ERROR, 
-                         "Reset payload power cmd rejected. Payload must be in READY state and it's in the %s state.",
-                         PL_SIM_LIB_GetPowerStateStr(PlSim.Lib.State.Power));
-   }
-   
-   return RetStatus;
-
-} /* End PL_SIM_PowerResetCmd() */
-
-
-/******************************************************************************
 ** Function: PL_SIM_ResetAppCmd
 **
 ** Notes:
@@ -320,7 +287,6 @@ static int32 InitApp(void)
 
       CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_POWER_ON_CC,    &PlSim,  PL_SIM_PowerOnCmd,    0);
       CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_POWER_OFF_CC,   &PlSim,  PL_SIM_PowerOffCmd,   0);
-      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_POWER_RESET_CC, &PlSim,  PL_SIM_PowerResetCmd, 0);
       CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_SET_FAULT_CC,   &PlSim,  PL_SIM_SetFaultCmd,   0);
       CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_CLEAR_FAULT_CC, &PlSim,  PL_SIM_ClearFaultCmd, 0);
 
@@ -449,12 +415,13 @@ static void SendStatusTlm(void)
    ** PL_SIM Library Data
    */
 
-   Payload->LibPwrState           = PlSim.Lib.State.Power;
-   Payload->LibPwrInitCycleCnt    = PlSim.Lib.State.PowerInitCycleCnt;
-   Payload->LibPwrResetCycleCnt   = PlSim.Lib.State.PowerResetCycleCnt;
-   Payload->LibDetectorFault      = PlSim.Lib.State.DetectorFaultPresent;
-   Payload->LibDetectorReadoutRow = PlSim.Lib.Detector.ReadoutRow;
-   Payload->LibDetectorImageCnt   = PlSim.Lib.Detector.ImageCnt;
+   Payload->LibPowerState            = PlSim.Lib.State.Power;
+   Payload->LibPowerInitCycleCnt     = PlSim.Lib.State.PowerInitCycleCnt;
+   Payload->LibDetectorResetCycleCnt = PlSim.Lib.State.DetectorResetCycleCnt;
+   Payload->LibDetectorFault         = PlSim.Lib.State.DetectorFaultPresent;
+   Payload->LibDetectorState         = PlSim.Lib.State.Detector;
+   Payload->LibDetectorReadoutRow    = PlSim.Lib.Detector.ReadoutRow;
+   Payload->LibDetectorImageCnt      = PlSim.Lib.Detector.ImageCnt;
 
 
    CFE_SB_TimeStampMsg(CFE_MSG_PTR(PlSim.StatusTlm.TelemetryHeader));
