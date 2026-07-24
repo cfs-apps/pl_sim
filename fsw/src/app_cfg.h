@@ -51,7 +51,7 @@
 */
 
 #define  PL_SIM_MAJOR_VER   3
-#define  PL_SIM_MINOR_VER   1
+#define  PL_SIM_MINOR_VER   2
 
 
 /******************************************************************************
