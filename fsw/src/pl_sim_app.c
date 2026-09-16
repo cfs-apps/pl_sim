@@ -282,13 +282,13 @@ static int32 InitApp(void)
       CFE_SB_Subscribe(PlSim.ExecuteMid, PlSim.CmdPipe);
 
       CMDMGR_Constructor(CMDMGR_OBJ);
-      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_NOOP_CC,  NULL, PL_SIM_NoOpCmd,     0);
-      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_RESET_CC, NULL, PL_SIM_ResetAppCmd, 0);
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, EDS_CONTAINER_PL_SIM_NOOP_CC,  NULL, PL_SIM_NoOpCmd,     0);
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, EDS_CONTAINER_PL_SIM_RESET_CC, NULL, PL_SIM_ResetAppCmd, 0);
 
-      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_POWER_ON_CC,    &PlSim,  PL_SIM_PowerOnCmd,    0);
-      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_POWER_OFF_CC,   &PlSim,  PL_SIM_PowerOffCmd,   0);
-      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_SET_FAULT_CC,   &PlSim,  PL_SIM_SetFaultCmd,   0);
-      CMDMGR_RegisterFunc(CMDMGR_OBJ, PL_SIM_CLEAR_FAULT_CC, &PlSim,  PL_SIM_ClearFaultCmd, 0);
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, EDS_CONTAINER_PL_SIM_POWER_ON_CC,    &PlSim,  PL_SIM_PowerOnCmd,    0);
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, EDS_CONTAINER_PL_SIM_POWER_OFF_CC,   &PlSim,  PL_SIM_PowerOffCmd,   0);
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, EDS_CONTAINER_PL_SIM_SET_FAULT_CC,   &PlSim,  PL_SIM_SetFaultCmd,   0);
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, EDS_CONTAINER_PL_SIM_CLEAR_FAULT_CC, &PlSim,  PL_SIM_ClearFaultCmd, 0);
 
       /*
       ** Initialize app messages 

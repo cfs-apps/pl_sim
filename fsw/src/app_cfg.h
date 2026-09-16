@@ -101,7 +101,7 @@ DECLARE_ENUM(Config,APP_CONFIG)
 ** exceeded so it is the developer's responsibility to verify the ranges. 
 */
 
-#define PL_SIM_BASE_EID  (APP_C_FW_APP_BASE_EID + 0)
+#define PL_SIM_BASE_EID  (EdsParam_APP_C_FW_APP_BASE_EID + 0)
 
 
 /*
