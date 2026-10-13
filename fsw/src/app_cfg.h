@@ -62,7 +62,7 @@
 #define CFG_APP_CFE_NAME    APP_CFE_NAME
 
 #define CFG_PL_SIM_CMD_TOPICID        PL_SIM_CMD_TOPICID
-#define CFG_BC_SCH_1_HZ_TOPICID       BC_SCH_1_HZ_TOPICID
+#define CFG_PL_SIM_EXECUTE_TOPICID    BC_SCH_1_SEC_TOPICID          // TOPICID renamed to execute to minimize changes if new BC_SCH_x_TOPICIDD used
 #define CFG_PL_SIM_STATUS_TLM_TOPICID PL_SIM_STATUS_TLM_TOPICID
 #define CFG_TLM_SLOW_RATE             TLM_SLOW_RATE
       
@@ -72,7 +72,7 @@
 #define APP_CONFIG(XX) \
    XX(APP_CFE_NAME,char*) \
    XX(PL_SIM_CMD_TOPICID,uint32) \
-   XX(BC_SCH_1_HZ_TOPICID,uint32) \
+   XX(BC_SCH_1_SEC_TOPICID,uint32) \
    XX(PL_SIM_STATUS_TLM_TOPICID,uint32) \
    XX(TLM_SLOW_RATE,uint32) \
    XX(CMD_PIPE_DEPTH,uint32) \
